@@ -5,6 +5,8 @@
 #include <cmath>
 #include <random>
 #include <chrono>
+#include <algorithm>
+#include <vector>
 
 typedef std::size_t HASH_INDEX_T;
 
@@ -20,6 +22,37 @@ struct MyStringHash {
     HASH_INDEX_T operator()(const std::string& k) const
     {
         // Add your code here
+        // 
+      std::vector <std::string> a; 
+      std::string reversed= std::string(k.rbegin(), k.rend());
+      for (int i=4; i >= 0; i--){
+        std::string partial="";
+        if (i*6< reversed.size()){
+          partial =reversed.substr(i*6, 6);
+          
+
+        }
+        int count_fill= 6-partial.size();
+        std::string empty_filled(count_fill, 'a');
+        partial=partial+empty_filled;
+        a.push_back(partial);
+
+      }
+      
+      HASH_INDEX_T w[5];
+      for (int i =0; i < 5;i++ ){
+        w[i] = letterDigitToNumber(a[i][5]);
+        for (int j=4; j >= 0; j--){
+          w[i] *= 36;
+         w[i] += letterDigitToNumber(a[i][j]);
+        }
+        // std::cout << w[i] << std::endl;
+      }
+      HASH_INDEX_T h=0;
+      for (int i=0; i < 5; i++){
+        h+=(rValues[i]*w[i]);
+      }
+      return h; 
 
 
     }
@@ -28,6 +61,17 @@ struct MyStringHash {
     HASH_INDEX_T letterDigitToNumber(char letter) const
     {
         // Add code here or delete this helper function if you do not want it
+        //std::string alpha="abcdefghijklmnopqrstuvwxyz";
+        //std::string numeric="0123456789";
+        char lower_case= tolower(letter);
+        
+        
+        if (lower_case >= 'a' && lower_case <= 'z'){
+          return static_cast<HASH_INDEX_T>(int(letter)-'a');
+        }
+        else if(lower_case >= '0' && lower_case <= '9'){
+          return static_cast<HASH_INDEX_T>((letter)-48+26);
+        }
 
     }
 
